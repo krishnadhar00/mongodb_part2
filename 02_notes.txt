@@ -1,0 +1,78 @@
+How to add multiple records together?
+1. To add multiple records at once in MongoDB we can use : db.collectionname.insertMany([{},{},{}]);
+Can we add an array in the JSON in MongoDB?
+2. We can simply use [] to add an array. eg. db.students.insertOne({name:"abc",subject:['cpp','java']});
+
+How to import sample DB in MongoDB?
+3. download the dataset which is present in JSON format. After the file is downloaded you can import this data using MongoDB Compass.
+4. Create a new Database (we can directly create it using MongoDB Compass). We can give a name to the database and give the first collection name also directly using MongoDB Compass. and database get created.
+5. Now click on Add Data, which will give you two options: Either you can import from JSON or CSV.
+6. Click on import and it will automatically import the data from the JSON
+
+Click on import and it will automatically import the data from the JSON
+7. We can use a terminal or CMD to import data without a compass.Open your terminal or CMD.Change the directory to the one where you have downloaded the JSON.
+8. Now we can use a MongoDB tool called as mongoimport (generally by default installed with MongoDB). We can use the following command: mongoimport --db db_name --collection collection_name --file data.json;
+eg. mongoimport --db weather --collection weather_data --file data.json
+
+Let's explore the DB we imported or perform some queries.
+How to see the count of documents in a collection? It will give the total count of documents in db.
+9. There is a count function that we can use : db.collection_name.find().count();
+
+How to handle the printing of huge amounts of data?
+10. If you have a huge amount of data, just like we have here approx 10,000 documents, if you try to execute db.collectionName.find in your mongosh then will not print all the 10,000 records, becuase it cannot handle that in the shell. If you try it then in the console, it will print some data and then gives you a prompt of Try "it" for more.
+
+How to get a certain number of documents?
+11. We can use a function called as limit : db.collectionName.find().limit(no_of_records_to_fetch);
+eg. db.weather_data.find().limit(3);
+
+How to set an offset while querying data?
+12. We can set an offset using the skip function. Using the skip function we can skip some records and then start fetching records post the skip.
+db.collection_name.find().skip(10).limit(2);
+
+How to filter records based on a conditions ?
+13. To filter the records, we can pass an object in the arguments of the find function, where we can add out conditions.
+command: db.collection_name.find({key1:value1, key2:value2,....}); filteration for more criteria.
+eg. db.weather_data.find({type:"fm-13"}).count();
+
+Projections :
+If we want to not get all the properties of the JSON, and instead get some specific key-value pairs, this process is called Projection. In the world of SQL, if you do SELECT * FROM TABLE; then you get all the columns but if you do SELECT name, address FROM TABLE; you only get name and address. This same thing is achieved in Projections.
+
+How to do projections?
+
+So the first argument of the find function is an object which takes filtration criteria. It can accept another argument as an object, where we can write whatever properties we have to include and assign them a value true.
+14. command : db.collectionName.find({filter1: value1...}, {property1: true, property2: true....});
+eg : db.weather_data.find({type:"FM-13"},{position:true,visibility:true})
+
+You can also pass the first argument as an empty JSON object.
+15. command : newweather_db>db.weather.data.find({},{position:true,visibility:true});
+
+If we want to manually exclude specific properties, you can write their names with false value allocated
+16. command : db.weather_data.find({},{position:false,visibility:false});
+Now this will bring everything apart from position and visibility.
+
+How to delete a document?
+If we want to delete some documents we can use functions like deleteOne , deleteMany and findByIdAndDelete .
+17. db.collectionName.deleteOne({filter1: value1, filter2: value2..});
+18. db.collectionName.deleteMany({filter1: value1, filter2: value2..});
+
+We can similarly use findOneAndDelete to filter the data and then delete one record it.
+19. db.collection_name.findOneAndDelete({callLetters:"FNPG"})
+
+How to update a record?
+To Update records we can use updateOne , updateMany and a few similar functions. These functions take two arguments,
+1. Filtration criteria viz. how to filter what data to update
+2. With what value we should update
+
+20. command : db.collectionName.updateOne({filter1: value1}, {$operator: {key1: value1, key2: value2...}})
+eg. db.weather_data.updateOne({ _id: ObjectId('5553a998e4b02cf7151190ce')}, {$set: {elevation: 9998}})
+eg. db.weather_data.updateOne({ _id: ObjectId('5553a998e4b02cf7151190ce')}, {$inc: {elevation: 1}})
+First key value pir is the filteration part and to which id u are going to update and second paramter is what u re going to update with that value.
+
+Now MongoDB provides us some operators for these updates for example:
+$set -> This will allocate the value to the key directly passed in the object
+$inc -> This will increment the value in the key by the number which u re providing in the second parameter.
+$inc -> To decrease we can do $inc with a negative value.
+eg : db.weather_data.updateOne({ _id: ObjectId('5553a998e4b02cf7151190ce')}, {$inc: {elevation: -1}})
+
+21. If you will use updateMany then all the records which are complying to the filteration criteria will be update.   
+In case of updateMany we do not set the filteration criteria as unique id bcoz its unique so we have to set another thing in filteration criteria so that it wil update the value in many records.
